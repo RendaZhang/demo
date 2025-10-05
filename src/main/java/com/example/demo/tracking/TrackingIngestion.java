@@ -226,6 +226,8 @@ public final class TrackingIngestion {
         ShipmentRepository repo = new InMemoryShipmentRepository();
         IdempotencyStore idem = new InMemoryIdempotencyStore();
         StateMachine fsm = new StateMachine(true);
+        // 初始设置：根据经验，条纹数量可以设置为 CPU 核心数的 2 倍。例如，如果 CPU 有 16 个核心，条纹数量可以设置为 32。
+        // 然后根据性能测试结果更新设置条纹数量
         Processor p = new Processor(repo, idem, fsm, /*stripes*/ 64, /*idemTtlMs*/ 10 * 60_000);
         // 示例序列：包含重复、乱序、非法迁移等
         List<Event> input = List.of(
